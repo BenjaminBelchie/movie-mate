@@ -75,6 +75,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                   {whereToWatch.flatrate.map((provider, index) => (
                     <Image
                       src={buildLogoURL("w45", provider.logo_path)}
+                      key={index}
                       width={45}
                       height={45}
                       alt={""}
