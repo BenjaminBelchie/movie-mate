@@ -39,34 +39,49 @@ export default async function Page({ params }: { params: { id: string } }) {
           backgroundPosition: "center",
         }}
       >
-        <div className="flex justify-center gap-8">
-          <Image
-            src={buildPosterImageURL("w342", movie?.poster_path)}
-            width={250}
-            height={750}
-            alt={""}
-          />
-          <div className="flex w-3/5 flex-col gap-4">
+        <div className="flex flex-col justify-center gap-8 p-6 md:flex-row md:p-0">
+          <div className="hidden md:block">
+            <Image
+              src={buildPosterImageURL("w342", movie?.poster_path)}
+              width={250}
+              height={750}
+              alt={""}
+            />
+          </div>
+          <div className="flex flex-col gap-4 md:w-3/5">
             <div>
-              <p className="mb-2 text-6xl font-bold">{movie.title}</p>
-              <p className="text-2xl font-semibold">{movie.tagline}</p>
+              <p className="mb-2 line-clamp-2 text-4xl font-bold md:line-clamp-none md:text-6xl">
+                {movie.title}
+              </p>
+              <p className="text-large font-semibold md:text-2xl">
+                {movie.tagline}
+              </p>
             </div>
-            <div className="flex items-center gap-4">
-              <p className="text-l font-medium">{movie.release_date}</p>
-              <div className="text-l flex items-center font-medium">
-                {movie.vote_average.toFixed()} <StarIcon />
+            <div className="flex flex-col gap-4 md:flex-row md:items-center">
+              <div className="flex items-center gap-4">
+                <p className="text-l font-medium">{movie.release_date}</p>
+                <div className="text-l flex items-center font-medium">
+                  {movie.vote_average.toFixed()} <StarIcon />
+                </div>
+                <div className="block md:hidden">
+                  <Chip>{movie.runtime} minutes</Chip>
+                </div>
               </div>
               <div className="flex">
                 {movie.genres.map((genre, key) => (
                   <div className="flex w-fit text-white" key={key}>
-                    {genre.name}
+                    <p className="line-clamp-1 md:line-clamp-none">
+                      {genre.name}
+                    </p>
                     {key !== movie.genres.length - 1 && (
                       <p className="px-2">•</p>
                     )}
                   </div>
                 ))}
               </div>
-              <Chip>{movie.runtime} minutes</Chip>
+              <div className="hidden md:block">
+                <Chip>{movie.runtime} minutes</Chip>
+              </div>
             </div>
             {whereToWatch?.flatrate && (
               <div className="flex flex-col gap-2">
@@ -85,8 +100,10 @@ export default async function Page({ params }: { params: { id: string } }) {
               </div>
             )}
             <div>
-              <p className="text-2xl font-semibold">Overview</p>
-              <p className="text-l font-medium">{movie.overview}</p>
+              <p className=" text-2xl font-semibold ">Overview</p>
+              <p className="text-l line-clamp-2 font-medium md:line-clamp-none">
+                {movie.overview}
+              </p>
             </div>
             <div className="flex gap-2">
               <Button color="primary">Add to Watchlist</Button>

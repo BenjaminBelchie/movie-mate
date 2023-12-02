@@ -41,34 +41,36 @@ export default function MovieDetailTabs({
       disableAnimation
     >
       <Tab key="simular" title="Related">
-        <p className="my-4 text-4xl font-bold">Related Movies</p>
-        <div className="grid w-fit grid-cols-6 gap-4">
-          {simularMovies.map((movie, index) => (
-            <Link href={`/movie/${movie.id}`} key={index}>
-              <Card
-                isFooterBlurred
-                key={index}
-                className="col-span-12 h-[300px] w-fit cursor-pointer sm:col-span-5"
-              >
-                <Image
-                  height={300}
-                  width={200}
-                  alt="Card example background"
-                  className="z-0  -translate-y-6 scale-125 object-cover"
-                  src={buildPosterImageURL("w500", movie.poster_path)}
-                />
-                <CardFooter className="absolute bottom-0 z-10 justify-between border-t-1 border-zinc-100/50 bg-white/30">
-                  <p className="line-clamp-1 font-bold text-black">
-                    {movie.title}
-                  </p>
-                </CardFooter>
-              </Card>
-            </Link>
-          ))}
+        <div className="p-4 md:p-0">
+          <p className="my-4 text-4xl font-bold">Related Movies</p>
+          <div className="grid w-fit grid-cols-2 gap-4 md:grid-cols-6">
+            {simularMovies.map((movie, index) => (
+              <Link href={`/movie/${movie.id}`} key={index}>
+                <Card
+                  isFooterBlurred
+                  key={index}
+                  className="col-span-12 h-[300px] w-fit cursor-pointer sm:col-span-5"
+                >
+                  <Image
+                    height={300}
+                    width={200}
+                    alt="Card example background"
+                    className="z-0  -translate-y-6 scale-125 object-cover"
+                    src={buildPosterImageURL("w500", movie.poster_path)}
+                  />
+                  <CardFooter className="absolute bottom-0 z-10 justify-between border-t-1 border-zinc-100/50 bg-white/30">
+                    <p className="line-clamp-1 font-bold text-black">
+                      {movie.title}
+                    </p>
+                  </CardFooter>
+                </Card>
+              </Link>
+            ))}
+          </div>
         </div>
       </Tab>
       <Tab key="reviews" title="Reviews">
-        <div className="mt-8">
+        <div className="mt-8 p-4 md:p-0">
           {reviews.map((review, index) => (
             <Card
               shadow="none"
@@ -124,32 +126,34 @@ export default function MovieDetailTabs({
         </div>
       </Tab>
       <Tab key="cast" title="Cast">
-        <p className="my-4 text-4xl font-bold">Top Billed Actors</p>
-        <div className="grid w-fit grid-cols-2 gap-4 sm:grid-cols-5">
-          {cast.map((actor, index) => (
-            <Link href={`/actor/${actor.id}`} key={index}>
-              <Card
-                shadow="sm"
-                isPressable
-                className="w-[185px]"
-                onPress={() => console.log("item pressed")}
-              >
-                <CardBody className="overflow-visible p-0">
-                  <Image
-                    width={185}
-                    height={300}
-                    alt={actor.name}
-                    className="h-full w-[185px] object-cover"
-                    src={buildProfileURL("w185", actor.profile_path)}
-                  />
-                </CardBody>
-                <CardFooter className="flex-col justify-start text-small">
-                  <b>{actor.name}</b>
-                  <p className="text-default-500">{actor.character}</p>
-                </CardFooter>
-              </Card>
-            </Link>
-          ))}
+        <div className="p-4 md:p-0">
+          <p className="my-4 text-4xl font-bold">Top Billed Actors</p>
+          <div className="grid w-fit grid-cols-2 gap-4 sm:grid-cols-5">
+            {cast.map((actor, index) => (
+              <Link href={`/actor/${actor.id}`} key={index}>
+                <Card
+                  shadow="sm"
+                  isPressable
+                  className="w-[185px]"
+                  onPress={() => console.log("item pressed")}
+                >
+                  <CardBody className="overflow-visible p-0">
+                    <Image
+                      width={185}
+                      height={300}
+                      alt={actor.name}
+                      className="h-full w-[185px] object-cover"
+                      src={buildProfileURL("w185", actor.profile_path)}
+                    />
+                  </CardBody>
+                  <CardFooter className="flex-col justify-start text-small">
+                    <b>{actor.name}</b>
+                    <p className="text-default-500">{actor.character}</p>
+                  </CardFooter>
+                </Card>
+              </Link>
+            ))}
+          </div>
         </div>
       </Tab>
     </Tabs>

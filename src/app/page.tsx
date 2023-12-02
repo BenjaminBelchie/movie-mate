@@ -44,20 +44,20 @@ export default async function Home() {
     <main>
       <div className="h-screen">
         <div
-          className="h-3/5 w-full md:h-4/6"
+          className="h-3/5 w-full bg-center md:h-4/6 md:bg-left-top "
           style={{
             backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.6)), url(${backdropImage})`,
             backgroundSize: "cover",
           }}
         >
-          <Nav />
+          <Nav isBlurred={false} />
           <div className="z-10 mx-8 flex h-3/5 flex-col justify-end gap-4">
             <p className=" line-clamp-2 text-4xl font-bold text-white md:text-7xl">
               {heroMovie?.title}
             </p>
             <div className="flex flex-col gap-1 md:flex-row md:gap-4">
               <div className="flex gap-4">
-                <p className="font-semibold text-white">
+                <p className=" font-semibold text-white ">
                   {heroMovie?.release_date}
                 </p>
                 <div className="flex items-center text-white">

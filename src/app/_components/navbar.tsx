@@ -13,13 +13,16 @@ import {
   DropdownMenu,
   Avatar,
   Input,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
 } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-export default function Nav() {
+export default function Nav({ isBlurred }: { isBlurred: boolean }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const { data: session } = useSession();
@@ -33,7 +36,7 @@ export default function Nav() {
     <Navbar
       onMenuOpenChange={setIsMenuOpen}
       maxWidth="full"
-      isBlurred={false}
+      isBlurred={isBlurred}
       classNames={{ base: "bg-transparent z-20" }}
     >
       <NavbarContent justify="start">
@@ -82,9 +85,48 @@ export default function Nav() {
           />
         </div>
         <div className="flex md:hidden">
-          <Button isIconOnly>
-            <SearchIcon size={18} />
-          </Button>
+          <Popover placement="bottom-end" showArrow>
+            <PopoverTrigger>
+              <Button isIconOnly>
+                <SearchIcon size={18} />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[240px]">
+              <div className=" flex w-full flex-col gap-2">
+                <Input
+                  classNames={{
+                    base: "max-w-full md:max-w-[15rem] sm:max-w-[10rem] h-10",
+                    mainWrapper: "h-full",
+                    input: "text-small",
+                    inputWrapper:
+                      "h-full font-normal text-default-500 bg-transparent hover:bg-transparent",
+                  }}
+                  placeholder="Search movies"
+                  value={searchTerm}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      searchForMovie();
+                    }
+                  }}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  size="sm"
+                  startContent={<SearchIcon size={18} />}
+                  endContent={
+                    searchTerm && (
+                      <Button
+                        isIconOnly
+                        size="sm"
+                        className=" bg-transparent"
+                        onClick={searchForMovie}
+                      >
+                        <Send size={18} />
+                      </Button>
+                    )
+                  }
+                />
+              </div>
+            </PopoverContent>
+          </Popover>
         </div>
         {session ? (
           <Dropdown placement="bottom-end">
