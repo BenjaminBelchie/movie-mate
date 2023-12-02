@@ -7,7 +7,7 @@ export default function MovieLayout({
 }) {
   return (
     <section className="h-screen">
-      <Nav />
+      <Nav isBlurred />
 
       {children}
     </section>

@@ -30,10 +30,18 @@ export default async function SearchPage({
   );
   return (
     <div className="flex w-full justify-center">
-      <div className="flex w-3/5 flex-col">
-        <h1 className="my-8 text-3xl font-bold">
-          Search Results For: {params.movie.replace(/-/g, " ")}
-        </h1>
+      <div className="flex flex-col p-4 md:w-3/5 md:p-0">
+        <div className="my-8 hidden md:block ">
+          <h1 className="text-3xl font-bold">
+            Search Results For: {params.movie.replace(/-/g, " ")}
+          </h1>
+        </div>
+        <div className="my-8 block md:hidden">
+          <h1 className=" text-3xl font-bold">Search Results For:</h1>
+          <h2 className="text-2xl font-semibold">
+            {params.movie.replace(/-/g, " ")}
+          </h2>
+        </div>
         <div className="flex flex-col gap-2">
           {searchResult.results.map((movie, index) => (
             <Card
@@ -58,11 +66,23 @@ export default async function SearchPage({
                   <div className="flex w-full items-start justify-between">
                     <div className="flex h-full flex-col justify-between">
                       <div className="flex w-full flex-col gap-0">
-                        <h3 className="text-2xl font-semibold">
-                          <Link href={`/movie/${movie.id}`}>{movie.title}</Link>
-                        </h3>
-                        <div className="flex flex-col gap-1 md:flex-row md:gap-4">
-                          <div className="flex gap-4">
+                        <div className="flex justify-between">
+                          <h3 className="line-clamp-2 text-2xl font-semibold md:line-clamp-none">
+                            <Link href={`/movie/${movie.id}`}>
+                              {movie.title}
+                            </Link>
+                          </h3>
+                          <Button
+                            isIconOnly
+                            className="-translate-y-2 translate-x-2 text-default-900/60 data-[hover]:bg-foreground/10"
+                            radius="full"
+                            variant="light"
+                          >
+                            <HeartIcon className={""} fill={"none"} />
+                          </Button>
+                        </div>
+                        <div className="mt-2 flex flex-col gap-1 md:mt-0 md:flex-row md:gap-4">
+                          <div className="flex flex-col md:flex-row md:gap-4">
                             {movie.release_date}
                             <div className="flex gap-2 text-white">
                               <p>Voted </p>
@@ -72,7 +92,9 @@ export default async function SearchPage({
                                 {movie.vote_average.toFixed()}
                                 <StarIcon />
                               </Chip>
-                              <p>By {movie.vote_count} People</p>
+                              <p className="hidden md:block">
+                                By {movie.vote_count} People
+                              </p>
                             </div>
                           </div>
                         </div>
@@ -80,7 +102,7 @@ export default async function SearchPage({
                           {movie.overview}
                         </p>
                       </div>
-                      <div className="mb-4 flex gap-2">
+                      <div className="mb-4 hidden gap-2 md:flex">
                         <Button color="primary">
                           <Link href={`/movie/${movie.id}`}>See Movie</Link>
                         </Button>
@@ -95,14 +117,6 @@ export default async function SearchPage({
                         </Popover>
                       </div>
                     </div>
-                    <Button
-                      isIconOnly
-                      className="-translate-y-2 translate-x-2 text-default-900/60 data-[hover]:bg-foreground/10"
-                      radius="full"
-                      variant="light"
-                    >
-                      <HeartIcon className={""} fill={"none"} />
-                    </Button>
                   </div>
                 </div>
               </CardBody>
