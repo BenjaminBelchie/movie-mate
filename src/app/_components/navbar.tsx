@@ -21,6 +21,8 @@ import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { SearchIcon } from "./Icons/SearchIcon";
+import { Send } from "./Icons/Send";
 
 export default function Nav({ isBlurred }: { isBlurred: boolean }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -60,7 +62,7 @@ export default function Nav({ isBlurred }: { isBlurred: boolean }) {
               inputWrapper:
                 "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
             }}
-            placeholder="Type to search..."
+            placeholder="Search Movies"
             value={searchTerm}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
@@ -149,9 +151,17 @@ export default function Nav({ isBlurred }: { isBlurred: boolean }) {
                 <p className="font-semibold">Signed in as</p>
                 <p className="font-semibold">{session.user.email}</p>
               </DropdownItem>
-              <DropdownItem key="settings">Profile</DropdownItem>
-              <DropdownItem key="settings">Friends</DropdownItem>
-              <DropdownItem key="settings">My Watchlist</DropdownItem>
+              <DropdownItem key="profile-page">Profile</DropdownItem>
+              <DropdownItem key="friends">
+                <Link className="text-small text-white" href="/friends">
+                  Friends
+                </Link>
+              </DropdownItem>
+              <DropdownItem key="watchlist">
+                <Link className="text-small text-white" href="/watchlist">
+                  My Watchlist
+                </Link>
+              </DropdownItem>
               <DropdownItem key="logout" color="danger">
                 <Link
                   className="text-small text-white"
@@ -183,69 +193,3 @@ export default function Nav({ isBlurred }: { isBlurred: boolean }) {
     </Navbar>
   );
 }
-
-const SendIcon = () => {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      style={{
-        fill: "rgba(148, 148, 156, 1);transform: ;msFilter:;",
-      }}
-    >
-      <path d="m21.426 11.095-17-8A1 1 0 0 0 3.03 4.242l1.212 4.849L12 12l-7.758 2.909-1.212 4.849a.998.998 0 0 0 1.396 1.147l17-8a1 1 0 0 0 0-1.81z"></path>
-    </svg>
-  );
-};
-
-const Send = ({ size = 24, strokeWidth = 1.5, ...props }) => (
-  <svg
-    aria-hidden="true"
-    fill="none"
-    focusable="false"
-    height={size}
-    role="presentation"
-    viewBox="0 0 24 24"
-    width={size}
-    {...props}
-  >
-    <path
-      d="m21.426 11.095-17-8A1 1 0 0 0 3.03 4.242l1.212 4.849L12 12l-7.758 2.909-1.212 4.849a.998.998 0 0 0 1.396 1.147l17-8a1 1 0 0 0 0-1.81z"
-      stroke="currentColor"
-      fill="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={strokeWidth}
-    ></path>
-  </svg>
-);
-
-const SearchIcon = ({ size = 24, strokeWidth = 1.5, ...props }) => (
-  <svg
-    aria-hidden="true"
-    fill="none"
-    focusable="false"
-    height={size}
-    role="presentation"
-    viewBox="0 0 24 24"
-    width={size}
-    {...props}
-  >
-    <path
-      d="M11.5 21C16.7467 21 21 16.7467 21 11.5C21 6.25329 16.7467 2 11.5 2C6.25329 2 2 6.25329 2 11.5C2 16.7467 6.25329 21 11.5 21Z"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={strokeWidth}
-    />
-    <path
-      d="M22 22L20 20"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={strokeWidth}
-    />
-  </svg>
-);

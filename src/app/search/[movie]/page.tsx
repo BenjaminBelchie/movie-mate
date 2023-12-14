@@ -2,20 +2,26 @@ import {
   Card,
   CardBody,
   Button,
-  Slider,
   Chip,
   Popover,
   PopoverContent,
   PopoverTrigger,
+  Avatar,
+  CardHeader,
 } from "@nextui-org/react";
 import Pagination from "~/app/_components/pagination";
 import searchForMovies from "~/util/queries/searchForMovies";
 import Image from "next/image";
 import { buildPosterImageURL } from "~/util/buildImageURLs";
 import StarIcon from "~/app/_components/Icons/Star";
-import { PopoverCard } from "~/app/_components/popover-card";
 import Link from "next/link";
 import { HeartIcon } from "~/app/_components/Icons/HeartIcon";
+import { api } from "~/trpc/server";
+import { getServerAuthSession } from "~/server/auth";
+import fetchMovieWatchProviders from "~/util/queries/fetchMovieWatchProviders";
+import { getOrCreateUserWatchlist } from "~/util/getOrCreateUserWatchlist";
+import { db } from "~/server/db";
+import AddToFriendsWatchlist from "~/app/_components/add-to-friends-watchlist";
 
 export default async function SearchPage({
   params,
@@ -28,6 +34,9 @@ export default async function SearchPage({
     params.movie.replace(/\s/g, "%20"),
     searchParams.page ? parseInt(searchParams.page) : 1,
   );
+  const session = await getServerAuthSession();
+  const friends = await api.friend.findUserFriends.query();
+
   return (
     <div className="flex w-full justify-center">
       <div className="flex flex-col p-4 md:w-3/5 md:p-0">
@@ -107,12 +116,123 @@ export default async function SearchPage({
                           <Link href={`/movie/${movie.id}`}>See Movie</Link>
                         </Button>
 
-                        <Popover showArrow placement="right">
+                        <Popover showArrow placement="bottom">
                           <PopoverTrigger>
                             <Button color="secondary">Share</Button>
                           </PopoverTrigger>
                           <PopoverContent className="p-1">
-                            <PopoverCard />
+                            {session ? (
+                              <>
+                                {friends && friends.length > 0 ? (
+                                  friends.map(async (friend, index) => {
+                                    const friendWatchlist =
+                                      await getOrCreateUserWatchlist(
+                                        db,
+                                        friend.friendId,
+                                      );
+
+                                    const movieInWatchFriendlist =
+                                      await db.filmOnWatchlist.findFirst({
+                                        where: {
+                                          AND: [
+                                            { filmId: movie.id },
+                                            { watchlistId: friendWatchlist.id },
+                                          ],
+                                        },
+                                      });
+
+                                    const whereToWatch =
+                                      await fetchMovieWatchProviders(
+                                        movie.id.toString(),
+                                      );
+
+                                    const isInFriendWatchlist =
+                                      !!movieInWatchFriendlist;
+                                    return (
+                                      <Card
+                                        key={index}
+                                        shadow="none"
+                                        className="w-[390px] border-none bg-transparent"
+                                      >
+                                        <CardHeader className="justify-between">
+                                          <div className="flex gap-3">
+                                            <Avatar
+                                              isBordered
+                                              radius="full"
+                                              size="md"
+                                              src={
+                                                friend.friend.image
+                                                  ? friend.friend.image
+                                                  : "/no-image.jpg"
+                                              }
+                                            />
+                                            <div className="flex flex-col items-start justify-center">
+                                              <h4 className="text-small font-semibold leading-none text-default-600">
+                                                {friend.friend.name}
+                                              </h4>
+                                              <h5 className="text-small tracking-tight text-default-500">
+                                                {friend.friend.email}
+                                              </h5>
+                                            </div>
+                                          </div>
+                                          {!isInFriendWatchlist && movie ? (
+                                            <AddToFriendsWatchlist
+                                              movie={{
+                                                adult: movie.adult,
+                                                backdrop_path:
+                                                  movie.backdrop_path,
+                                                id: movie.id,
+                                                genre_ids: movie.genre_ids,
+                                                original_language:
+                                                  movie.original_language,
+                                                original_title:
+                                                  movie.original_title,
+                                                overview: movie.overview,
+                                                popularity: movie.popularity,
+                                                poster_path: movie.poster_path,
+                                                release_date:
+                                                  movie.release_date,
+                                                title: movie.title,
+                                                video: movie.video,
+                                                vote_average:
+                                                  movie.vote_average,
+                                                vote_count: movie.vote_count,
+                                              }}
+                                              watchlistId={friendWatchlist.id}
+                                              movieWatchProviders={
+                                                whereToWatch?.flatrate
+                                              }
+                                            />
+                                          ) : (
+                                            <Button disabled>
+                                              In watchlist
+                                            </Button>
+                                          )}
+                                        </CardHeader>
+                                      </Card>
+                                    );
+                                  })
+                                ) : (
+                                  <div className="flex flex-col items-center p-4">
+                                    <p>You have no friends.</p>
+                                    <p>
+                                      Go to{" "}
+                                      <Link
+                                        href="/friends"
+                                        className="text-blue-500"
+                                      >
+                                        friends
+                                      </Link>{" "}
+                                      to find some.
+                                    </p>
+                                  </div>
+                                )}
+                              </>
+                            ) : (
+                              <div className="p-4">
+                                You need to signin to share
+                              </div>
+                            )}
                           </PopoverContent>
                         </Popover>
                       </div>

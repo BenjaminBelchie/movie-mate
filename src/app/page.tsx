@@ -1,34 +1,40 @@
-import { CreatePost } from "~/app/_components/create-post";
 import { getServerAuthSession } from "~/server/auth";
 import { api } from "~/trpc/server";
 import Nav from "./_components/navbar";
-import axios from "axios";
-import { env } from "~/env";
 import {
+  Avatar,
   Button,
+  Card,
+  CardHeader,
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@nextui-org/react";
 import EmblaCarousel from "~/app/_components/Carousel/embla-carousel";
 import { type EmblaOptionsType } from "embla-carousel-react";
-import { type GenreResponse } from "~/types/Responses/Genre";
 import StarIcon from "./_components/Icons/Star";
 import Link from "next/link";
 import fetchPopularMovies from "~/util/queries/fetchPopularMovies";
-import fetchMovieGenres from "~/util/queries/fetchMovieGenres";
 import getRandomMovie from "~/util/getRandomMovie";
 import { buildBackdropImageURL } from "~/util/buildImageURLs";
 import getMovieGenres from "~/util/getMovieGenres";
-import { PopoverCard } from "./_components/popover-card";
+import AddToFriendsWatchlist from "./_components/add-to-friends-watchlist";
+import { db } from "~/server/db";
+import { getOrCreateUserWatchlist } from "~/util/getOrCreateUserWatchlist";
+import fetchMovieWatchProviders from "~/util/queries/fetchMovieWatchProviders";
 
 export default async function Home() {
   // const hello = await api.post.hello.query({ text: "from tRPC" });
-  // const session = await getServerAuthSession();
+  const session = await getServerAuthSession();
 
   const popularMovies = await fetchPopularMovies();
   const heroMovie = getRandomMovie(popularMovies.results);
   const genres = await getMovieGenres(heroMovie);
+
+  let friends;
+  if (session && heroMovie) {
+    friends = await api.friend.findUserFriends.query();
+  }
 
   const backdropImage = buildBackdropImageURL(
     "w1280",
@@ -85,12 +91,103 @@ export default async function Home() {
               </Button>
               <Popover showArrow placement="bottom">
                 <PopoverTrigger>
-                  <Button color="secondary" className="w-fit">
-                    Share
-                  </Button>
+                  <Button color="secondary">Share</Button>
                 </PopoverTrigger>
                 <PopoverContent className="p-1">
-                  <PopoverCard />
+                  {session && heroMovie ? (
+                    <>
+                      {friends && friends.length > 0 ? (
+                        friends.map(async (friend, index) => {
+                          const friendWatchlist =
+                            await getOrCreateUserWatchlist(db, friend.friendId);
+
+                          const whereToWatch = await fetchMovieWatchProviders(
+                            heroMovie.id.toString(),
+                          );
+
+                          const movieInWatchFriendlist =
+                            await db.filmOnWatchlist.findFirst({
+                              where: {
+                                AND: [
+                                  { filmId: heroMovie?.id },
+                                  { watchlistId: friendWatchlist.id },
+                                ],
+                              },
+                            });
+
+                          const isInFriendWatchlist = !!movieInWatchFriendlist;
+                          return (
+                            <Card
+                              key={index}
+                              shadow="none"
+                              className="w-[390px] border-none bg-transparent"
+                            >
+                              <CardHeader className="justify-between">
+                                <div className="flex gap-3">
+                                  <Avatar
+                                    isBordered
+                                    radius="full"
+                                    size="md"
+                                    src={
+                                      friend.friend.image
+                                        ? friend.friend.image
+                                        : "/no-image.jpg"
+                                    }
+                                  />
+                                  <div className="flex flex-col items-start justify-center">
+                                    <h4 className="text-small font-semibold leading-none text-default-600">
+                                      {friend.friend.name}
+                                    </h4>
+                                    <h5 className="text-small tracking-tight text-default-500">
+                                      {friend.friend.email}
+                                    </h5>
+                                  </div>
+                                </div>
+                                {!isInFriendWatchlist && heroMovie ? (
+                                  <AddToFriendsWatchlist
+                                    movie={{
+                                      adult: heroMovie.adult,
+                                      backdrop_path: heroMovie.backdrop_path,
+                                      id: heroMovie.id,
+                                      genre_ids: heroMovie.genre_ids,
+                                      original_language:
+                                        heroMovie.original_language,
+                                      original_title: heroMovie.original_title,
+                                      overview: heroMovie.overview,
+                                      popularity: heroMovie.popularity,
+                                      poster_path: heroMovie.poster_path,
+                                      release_date: heroMovie.release_date,
+                                      title: heroMovie.title,
+                                      video: heroMovie.video,
+                                      vote_average: heroMovie.vote_average,
+                                      vote_count: heroMovie.vote_count,
+                                    }}
+                                    watchlistId={friendWatchlist.id}
+                                    movieWatchProviders={whereToWatch?.flatrate}
+                                  />
+                                ) : (
+                                  <Button disabled>In watchlist</Button>
+                                )}
+                              </CardHeader>
+                            </Card>
+                          );
+                        })
+                      ) : (
+                        <div className="flex flex-col items-center p-4">
+                          <p>You have no friends.</p>
+                          <p>
+                            Go to{" "}
+                            <Link href="/friends" className="text-blue-500">
+                              friends
+                            </Link>{" "}
+                            to find some.
+                          </p>
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <div className="p-4">You need to signin to share</div>
+                  )}
                 </PopoverContent>
               </Popover>
             </div>
@@ -100,73 +197,6 @@ export default async function Home() {
           <EmblaCarousel movies={popularMovies.results} options={OPTIONS} />
         </div>
       </div>
-      {/* <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
-        <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
-          Create <span className="text-[hsl(280,100%,70%)]">T3</span> App
-        </h1>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
-          <Link
-            className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 hover:bg-white/20"
-            href="https://create.t3.gg/en/usage/first-steps"
-            target="_blank"
-          >
-            <h3 className="text-2xl font-bold">First Steps →</h3>
-            <div className="text-lg">
-              Just the basics - Everything you need to know to set up your
-              database and authentication.
-            </div>
-          </Link>
-          <Link
-            className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 hover:bg-white/20"
-            href="https://create.t3.gg/en/introduction"
-            target="_blank"
-          >
-            <h3 className="text-2xl font-bold">Documentation →</h3>
-            <div className="text-lg">
-              Learn more about Create T3 App, the libraries it uses, and how to
-              deploy it.
-            </div>
-          </Link>
-        </div>
-        <div className="flex flex-col items-center gap-2">
-          <p className="text-2xl text-white">
-            {hello ? hello.greeting : "Loading tRPC query..."}
-          </p>
-
-          <div className="flex flex-col items-center justify-center gap-4">
-            <p className="text-center text-2xl text-white">
-              {session && <span>Logged in as {session.user?.name}</span>}
-            </p>
-            <Link
-              href={session ? "/api/auth/signout" : "/api/auth/signin"}
-              className="rounded-full bg-white/10 px-10 py-3 font-semibold no-underline transition hover:bg-white/20"
-            >
-              {session ? "Sign out" : "Sign in"}
-            </Link>
-          </div>
-        </div>
-
-        <CrudShowcase />
-      </div> */}
     </main>
-  );
-}
-
-async function CrudShowcase() {
-  const session = await getServerAuthSession();
-  if (!session?.user) return null;
-
-  const latestPost = await api.post.getLatest.query();
-
-  return (
-    <div className="w-full max-w-xs">
-      {latestPost ? (
-        <p className="truncate">Your most recent post: {latestPost.name}</p>
-      ) : (
-        <p>You have no posts yet.</p>
-      )}
-
-      <CreatePost />
-    </div>
   );
 }
