@@ -2,7 +2,6 @@ import {
   Card,
   CardBody,
   Button,
-  Slider,
   Chip,
   Popover,
   PopoverContent,

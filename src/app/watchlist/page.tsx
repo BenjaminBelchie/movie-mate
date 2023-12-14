@@ -16,7 +16,6 @@ import { getServerAuthSession } from "~/server/auth";
 import { db } from "~/server/db";
 import { buildLogoURL, buildPosterImageURL } from "~/util/buildImageURLs";
 import { getOrCreateUserWatchlist } from "~/util/getOrCreateUserWatchlist";
-import AddToWatchlist from "../_components/add-to-watchlist";
 import AddToFriendsWatchlist from "../_components/add-to-friends-watchlist";
 
 export default async function WatchlistPage() {
@@ -50,7 +49,7 @@ export default async function WatchlistPage() {
         {watchlistItems && watchlistItems.length > 0 ? (
           <div className="grid grid-cols-2 gap-4">
             {watchlistItems.map((watchlistItem, index) => (
-              <Card>
+              <Card key={index}>
                 <div className="flex justify-between p-4">
                   <div className="flex items-center gap-5">
                     <Image

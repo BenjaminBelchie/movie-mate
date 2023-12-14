@@ -1,12 +1,6 @@
-import { FriendStatus } from "@prisma/client";
 import { z } from "zod";
-import { type MovieBrief } from "~/types/MovieBrief";
 
-import {
-  createTRPCRouter,
-  protectedProcedure,
-  publicProcedure,
-} from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
 export const watchlistRouter = createTRPCRouter({
   addToWatchlist: protectedProcedure

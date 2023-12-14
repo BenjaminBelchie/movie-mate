@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { PrismaClient } from "@prisma/client";
 import { FriendStatus } from "@prisma/client";
 const prisma = new PrismaClient();
@@ -39,12 +40,16 @@ async function seedDatabase() {
   // Create friendships
   const friendshipsData = [
     {
+      // @ts-ignore
       userId: users[0].id,
+      // @ts-ignore
       friendId: users[1].id,
       status: FriendStatus.ACCEPTED,
     },
     {
+      // @ts-ignore
       userId: users[0].id,
+      // @ts-ignore
       friendId: users[2].id,
       status: FriendStatus.ACCEPTED,
     },
@@ -64,6 +69,7 @@ seedDatabase()
   .catch((error) => {
     throw error;
   })
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   .finally(async () => {
     await prisma.$disconnect();
   });

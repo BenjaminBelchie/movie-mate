@@ -27,7 +27,7 @@ export default function FriendRequests({
   return (
     <div className="flex w-72 flex-col gap-4 p-4">
       {friendRequests.map((request, index) => (
-        <div className="flex items-center justify-between">
+        <div key={index} className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Avatar
               alt={request.user.name}

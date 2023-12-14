@@ -2,12 +2,12 @@
 
 import { Switch } from "@nextui-org/react";
 import { useTheme } from "next-themes";
-import { JSX, SVGProps, useEffect, useState } from "react";
+import { type JSX, type SVGProps, useEffect, useState } from "react";
 
 export function ThemeSwitcher() {
   const [mounted, setMounted] = useState(false);
   const [isSelected, setIsSelected] = useState(true);
-  const { theme, setTheme } = useTheme();
+  const { setTheme } = useTheme();
 
   useEffect(() => {
     setMounted(true);

@@ -1,9 +1,6 @@
-import { CreatePost } from "~/app/_components/create-post";
 import { getServerAuthSession } from "~/server/auth";
 import { api } from "~/trpc/server";
 import Nav from "./_components/navbar";
-import axios from "axios";
-import { env } from "~/env";
 import {
   Avatar,
   Button,
@@ -34,16 +31,9 @@ export default async function Home() {
   const heroMovie = getRandomMovie(popularMovies.results);
   const genres = await getMovieGenres(heroMovie);
 
-  let whereToWatch;
-  let watchlist;
   let friends;
   if (session && heroMovie) {
     friends = await api.friend.findUserFriends.query();
-    watchlist = await getOrCreateUserWatchlist(db, session.user.id);
-    whereToWatch = await fetchMovieWatchProviders(heroMovie.id.toString());
-    const movieInWatchlist = await db.filmOnWatchlist.findFirst({
-      where: { AND: [{ filmId: heroMovie.id }, { watchlistId: watchlist.id }] },
-    });
   }
 
   const backdropImage = buildBackdropImageURL(
@@ -104,12 +94,16 @@ export default async function Home() {
                   <Button color="secondary">Share</Button>
                 </PopoverTrigger>
                 <PopoverContent className="p-1">
-                  {session ? (
+                  {session && heroMovie ? (
                     <>
                       {friends && friends.length > 0 ? (
                         friends.map(async (friend, index) => {
                           const friendWatchlist =
                             await getOrCreateUserWatchlist(db, friend.friendId);
+
+                          const whereToWatch = await fetchMovieWatchProviders(
+                            heroMovie.id.toString(),
+                          );
 
                           const movieInWatchFriendlist =
                             await db.filmOnWatchlist.findFirst({

@@ -1,6 +1,5 @@
-import { Prisma, PrismaClient } from "@prisma/client";
-import { DefaultArgs } from "@prisma/client/runtime/library";
-import { Session } from "next-auth";
+import { type Prisma, type PrismaClient } from "@prisma/client";
+import { type DefaultArgs } from "@prisma/client/runtime/library";
 
 export const getOrCreateUserWatchlist = async (
   db: PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,

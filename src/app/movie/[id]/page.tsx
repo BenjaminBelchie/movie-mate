@@ -15,7 +15,6 @@ import StarIcon from "~/app/_components/Icons/Star";
 import AddToFriendsWatchlist from "~/app/_components/add-to-friends-watchlist";
 import AddToWatchlist from "~/app/_components/add-to-watchlist";
 import MovieDetailTabs from "~/app/_components/movie-detail-tabs";
-import { PopoverCard } from "~/app/_components/popover-card";
 import { getServerAuthSession } from "~/server/auth";
 import { db } from "~/server/db";
 import { api } from "~/trpc/server";
