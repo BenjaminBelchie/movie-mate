@@ -22,6 +22,7 @@ import fetchMovieWatchProviders from "~/util/queries/fetchMovieWatchProviders";
 import { getOrCreateUserWatchlist } from "~/util/getOrCreateUserWatchlist";
 import { db } from "~/server/db";
 import AddToFriendsWatchlist from "~/app/_components/add-to-friends-watchlist";
+import { Prisma } from "@prisma/client";
 
 export default async function SearchPage({
   params,
@@ -35,7 +36,10 @@ export default async function SearchPage({
     searchParams.page ? parseInt(searchParams.page) : 1,
   );
   const session = await getServerAuthSession();
-  const friends = await api.friend.findUserFriends.query();
+  let friends: Prisma.FriendGetPayload<{include: {friend: true}}>[] | undefined;
+  if(session){
+    friends = await api.friend.findUserFriends.query();
+  }
 
   return (
     <div className="flex w-full justify-center">
