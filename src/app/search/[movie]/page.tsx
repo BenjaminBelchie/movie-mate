@@ -35,7 +35,10 @@ export default async function SearchPage({
     searchParams.page ? parseInt(searchParams.page) : 1,
   );
   const session = await getServerAuthSession();
-  const friends = await api.friend.findUserFriends.query();
+  let friends;
+  if(session){
+    friends = await api.friend.findUserFriends.query();
+  }
 
   return (
     <div className="flex w-full justify-center">
