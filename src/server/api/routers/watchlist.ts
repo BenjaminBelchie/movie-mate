@@ -97,4 +97,15 @@ export const watchlistRouter = createTRPCRouter({
           });
       }
     }),
+  removeFromWatchlist: protectedProcedure
+    .input(
+      z.object({
+        watchlistItemId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.filmOnWatchlist.delete({
+        where: { id: input.watchlistItemId },
+      });
+    }),
 });

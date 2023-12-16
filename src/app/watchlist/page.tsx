@@ -10,6 +10,7 @@ import SharePopover from "../_components/ShareMovie/share-popover";
 import MobileSharePopover from "../_components/ShareMovie/mobile-share-popover";
 import { convertWatchlistItemToMovieBrief } from "~/util/convertWatchlistItemToMovieBrief";
 import { convertWatchlistProvidersToWatchproviders } from "~/util/convertWatchlistProvidersToWatchProviders";
+import RemoveFromWatchlist from "../_components/remove-from-watchlist";
 
 export default async function WatchlistPage() {
   const session = await getServerAuthSession();
@@ -112,7 +113,9 @@ export default async function WatchlistPage() {
                             )}
                           />
                         </div>
-                        <Button size="sm">Remove from Watchlist</Button>
+                        <RemoveFromWatchlist
+                          watchlistItemId={watchlistItem.id}
+                        />
                       </div>
                     </div>
                   </div>
