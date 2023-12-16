@@ -39,8 +39,9 @@ model FilmOnWatchlist {
   watchlistId  String
   film         Film @relation(fields: [filmId], references: [id])
   watchlist    UserWatchlist @relation(fields: [watchlistId], references: [id])
-  addedById String
-  addedBy User @relation(fields: [addedById], references: [id])
+  dateAdded    DateTime @default(now())
+  addedById    String
+  addedBy      User @relation(fields: [addedById], references: [id])
   @@unique([filmId, watchlistId])
 }
 

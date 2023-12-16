@@ -1,32 +1,15 @@
-import {
-  Card,
-  CardBody,
-  Button,
-  Chip,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-  Avatar,
-  CardHeader,
-} from "@nextui-org/react";
+import { Card, CardBody, Button, Chip } from "@nextui-org/react";
 import Pagination from "~/app/_components/pagination";
 import searchForMovies from "~/util/queries/searchForMovies";
 import Image from "next/image";
 import { buildPosterImageURL } from "~/util/buildImageURLs";
 import StarIcon from "~/app/_components/Icons/Star";
 import Link from "next/link";
-import { HeartIcon } from "~/app/_components/Icons/HeartIcon";
 import { api } from "~/trpc/server";
 import { getServerAuthSession } from "~/server/auth";
-import fetchMovieWatchProviders from "~/util/queries/fetchMovieWatchProviders";
-import { getOrCreateUserWatchlist } from "~/util/getOrCreateUserWatchlist";
-import { db } from "~/server/db";
-import AddToFriendsWatchlist from "~/app/_components/add-to-friends-watchlist";
-import { Prisma } from "@prisma/client";
+import { type Prisma } from "@prisma/client";
 import MobileSharePopover from "~/app/_components/ShareMovie/mobile-share-popover";
 import SharePopover from "~/app/_components/ShareMovie/share-popover";
-import { convertWatchlistItemToMovieBrief } from "~/util/convertWatchlistItemToMovieBrief";
-import { convertWatchlistProvidersToWatchproviders } from "~/util/convertWatchlistProvidersToWatchProviders";
 
 export default async function SearchPage({
   params,
