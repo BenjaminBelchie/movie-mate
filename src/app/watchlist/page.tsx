@@ -1,4 +1,6 @@
 import {
+  Autocomplete,
+  AutocompleteItem,
   Avatar,
   Button,
   Card,
@@ -18,14 +20,26 @@ import MobileSharePopover from "../_components/ShareMovie/mobile-share-popover";
 import { convertWatchlistItemToMovieBrief } from "~/util/convertWatchlistItemToMovieBrief";
 import { convertWatchlistProvidersToWatchproviders } from "~/util/convertWatchlistProvidersToWatchProviders";
 import RemoveFromWatchlist from "../_components/remove-from-watchlist";
+import FilterFriendsAutocomplete from "../_components/filter-friends-autocomplete";
 
-export default async function WatchlistPage() {
+export default async function WatchlistPage({
+  searchParams,
+}: {
+  searchParams: Record<string, string | undefined>;
+}) {
   const session = await getServerAuthSession();
   if (!session) return redirect("/api/auth/signin");
 
+  console.log(searchParams);
+
   const watchlist = await getOrCreateUserWatchlist(db, session.user.id);
   const watchlistItems = await db.filmOnWatchlist.findMany({
-    where: { watchlistId: watchlist.id },
+    where: {
+      AND: [
+        { watchlistId: watchlist.id },
+        searchParams.addedBy ? { addedById: searchParams.addedBy } : {},
+      ],
+    },
     include: {
       film: { include: { watchProviders: { include: { provider: true } } } },
       addedBy: true,
@@ -47,6 +61,11 @@ export default async function WatchlistPage() {
               <Button color="primary">Find Movies</Button>
             </Link>
           </div>
+        </div>
+        <div className="flex gap-2">
+          <FilterFriendsAutocomplete
+            friends={friends.map((friend) => friend.friend)}
+          />
         </div>
         {watchlistItems && watchlistItems.length > 0 ? (
           <div className="grid gap-4 md:grid-cols-2">
