@@ -27,7 +27,7 @@ export default function FindFriendsAutocomplete({ users }: { users: User[] }) {
   return (
     <Autocomplete
       classNames={{
-        base: "max-w-xs",
+        base: "md:max-w-xs",
         listboxWrapper: "max-h-[320px]",
         selectorButton: "text-default-500",
       }}

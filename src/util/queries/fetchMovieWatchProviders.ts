@@ -15,5 +15,5 @@ export default async function fetchMovieWatchProviders(movieID: string) {
       return simularMoviesResponse.data.results[region];
     }
   }
-  return null;
+  return undefined;
 }

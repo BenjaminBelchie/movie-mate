@@ -13,6 +13,7 @@ import NoFriendsAnimation from "../_components/Animations/no-friends";
 import FriendList from "../_components/Friends/friend-list";
 import NoFriendRequestsAnimation from "../_components/Animations/no-friend-requests";
 import FriendRequests from "../_components/Friends/friend-requests";
+import { UserGroup } from "../_components/Icons/UserGroup";
 
 export default async function FriendsPage() {
   const session = await getServerAuthSession();
@@ -41,10 +42,11 @@ export default async function FriendsPage() {
 
   return (
     <div className="flex w-full items-center justify-center">
-      <div className="my-5 flex flex-col gap-4 md:w-[1200px]">
-        <div className="flex w-full justify-between">
+      <div className="mx-4 my-5 flex flex-col gap-4 md:mx-0 md:w-[1200px]">
+        {/* Desktop Layout */}
+        <div className="hidden w-full flex-col justify-between gap-2 md:flex md:flex-row md:gap-0">
           <p className="text-4xl font-bold">Your Friends</p>
-          <div className="flex flex-row items-center gap-2">
+          <div className="  flex flex-row items-center gap-2">
             <Badge
               content={friendRequests.length}
               color="danger"
@@ -71,11 +73,43 @@ export default async function FriendsPage() {
             <FindFriendsAutocomplete users={users} />
           </div>
         </div>
+        {/* Mobile layout */}
+        <div className="flex flex-col gap-3 md:hidden">
+          <div className="flex justify-between">
+            <p className="text-4xl font-bold">Your Friends</p>
+            <Badge
+              content={friendRequests.length}
+              color="danger"
+              isInvisible={friendRequests.length === 0}
+            >
+              <Popover placement="bottom-end" showArrow={true}>
+                <PopoverTrigger>
+                  <Button isIconOnly variant="bordered">
+                    <UserGroup />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent>
+                  {friendRequests.length > 0 ? (
+                    <FriendRequests friendRequests={friendRequests} />
+                  ) : (
+                    <div className="mx-2 mb-6 flex max-w-[210px] flex-col items-center">
+                      <NoFriendRequestsAnimation />
+                      <p className="font-semibold">
+                        You have no friend requests
+                      </p>
+                    </div>
+                  )}
+                </PopoverContent>
+              </Popover>
+            </Badge>
+          </div>
+          <FindFriendsAutocomplete users={users} />
+        </div>
         {friends.length > 0 ? (
           <FriendList friends={friends} />
         ) : (
           <div className="flex justify-center">
-            <div className="my-5 flex w-1/3 flex-col items-center">
+            <div className="my-5 flex w-full flex-col items-center md:w-1/3">
               <NoFriendsAnimation />
               <p className="text-large">Looks like you have no friends.</p>
               <p>Lets change that</p>

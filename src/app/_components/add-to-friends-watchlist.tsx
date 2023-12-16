@@ -35,13 +35,26 @@ export default function AddToFriendsWatchlist({
   };
 
   return (
-    <Button
-      color="primary"
-      onClick={() => {
-        addToWatchlist(movie, watchlistId, movieWatchProviders);
-      }}
-    >
-      Add to Watchlist
-    </Button>
+    <>
+      <Button
+        color="primary"
+        className="hidden md:block"
+        onClick={() => {
+          addToWatchlist(movie, watchlistId, movieWatchProviders);
+        }}
+      >
+        Add to Watchlist
+      </Button>
+      <Button
+        color="primary"
+        size="sm"
+        className="block md:hidden"
+        onClick={() => {
+          addToWatchlist(movie, watchlistId, movieWatchProviders);
+        }}
+      >
+        Add to Watchlist
+      </Button>
+    </>
   );
 }
