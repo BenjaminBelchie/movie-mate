@@ -20,8 +20,21 @@ export default function RemoveFromWatchlist({
   };
 
   return (
-    <Button size="sm" onClick={removeFromWatchlist}>
-      Remove from Watchlist
-    </Button>
+    <>
+      <Button
+        size="sm"
+        className="hidden md:block"
+        onClick={removeFromWatchlist}
+      >
+        Remove from Watchlist
+      </Button>
+      <Button
+        size="sm"
+        className="flex md:hidden"
+        onClick={removeFromWatchlist}
+      >
+        Remove
+      </Button>
+    </>
   );
 }

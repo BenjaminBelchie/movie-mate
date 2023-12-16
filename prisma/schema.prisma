@@ -39,7 +39,8 @@ model FilmOnWatchlist {
   watchlistId  String
   film         Film @relation(fields: [filmId], references: [id])
   watchlist    UserWatchlist @relation(fields: [watchlistId], references: [id])
-  
+  addedById String
+  addedBy User @relation(fields: [addedById], references: [id])
   @@unique([filmId, watchlistId])
 }
 
@@ -111,6 +112,7 @@ model User {
     sessions      Session[]
     friends       Friend[]  @relation("UserFriends")
     users         Friend[] @relation("Friends")
+    addedFilms FilmOnWatchlist[]
     watchlist     UserWatchlist?
     watchlistId   String?
 }

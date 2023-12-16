@@ -1,4 +1,11 @@
-import { Button, Card, Divider, Image as UIImage } from "@nextui-org/react";
+import {
+  Avatar,
+  Button,
+  Card,
+  Divider,
+  Tooltip,
+  Image as UIImage,
+} from "@nextui-org/react";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -21,6 +28,7 @@ export default async function WatchlistPage() {
     where: { watchlistId: watchlist.id },
     include: {
       film: { include: { watchProviders: { include: { provider: true } } } },
+      addedBy: true,
     },
   });
 
@@ -89,33 +97,48 @@ export default async function WatchlistPage() {
                       <p className="my-2 line-clamp-2">
                         {watchlistItem.film.overview}
                       </p>
-                      <div className="flex gap-2">
-                        <div className="hidden md:block">
-                          <SharePopover
-                            friends={friends}
-                            movie={convertWatchlistItemToMovieBrief(
-                              watchlistItem,
-                            )}
-                            smallShareBtn
-                            watchProviders={convertWatchlistProvidersToWatchproviders(
-                              watchlistItem,
-                            )}
+                      <div className="flex justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="hidden md:block">
+                            <SharePopover
+                              friends={friends}
+                              movie={convertWatchlistItemToMovieBrief(
+                                watchlistItem,
+                              )}
+                              smallShareBtn
+                              watchProviders={convertWatchlistProvidersToWatchproviders(
+                                watchlistItem,
+                              )}
+                            />
+                          </div>
+                          <div className="block md:hidden">
+                            <MobileSharePopover
+                              friends={friends}
+                              movie={convertWatchlistItemToMovieBrief(
+                                watchlistItem,
+                              )}
+                              watchProviders={convertWatchlistProvidersToWatchproviders(
+                                watchlistItem,
+                              )}
+                            />
+                          </div>
+                          <RemoveFromWatchlist
+                            watchlistItemId={watchlistItem.id}
                           />
                         </div>
-                        <div className="block md:hidden">
-                          <MobileSharePopover
-                            friends={friends}
-                            movie={convertWatchlistItemToMovieBrief(
-                              watchlistItem,
-                            )}
-                            watchProviders={convertWatchlistProvidersToWatchproviders(
-                              watchlistItem,
-                            )}
+                        <Tooltip
+                          placement="bottom"
+                          classNames={{ content: "p-2" }}
+                          content={`This film was added by ${watchlistItem.addedBy.name}`}
+                        >
+                          <Avatar
+                            src={
+                              watchlistItem.addedBy.image
+                                ? watchlistItem.addedBy.image
+                                : "/no-image.jpg"
+                            }
                           />
-                        </div>
-                        <RemoveFromWatchlist
-                          watchlistItemId={watchlistItem.id}
-                        />
+                        </Tooltip>
                       </div>
                     </div>
                   </div>
