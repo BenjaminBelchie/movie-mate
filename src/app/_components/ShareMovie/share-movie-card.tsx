@@ -3,7 +3,7 @@ import { type WatchProvider, type Prisma } from "@prisma/client";
 import { getServerAuthSession } from "~/server/auth";
 import { db } from "~/server/db";
 import { getOrCreateUserWatchlist } from "~/util/getOrCreateUserWatchlist";
-import AddToFriendsWatchlist from "../add-to-friends-watchlist";
+import AddToFriendsWatchlist from "../Watchlist/add-to-friends-watchlist";
 import { type MovieBrief } from "~/types/MovieBrief";
 import fetchMovieWatchProviders from "~/util/queries/fetchMovieWatchProviders";
 

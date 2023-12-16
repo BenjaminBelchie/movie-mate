@@ -12,8 +12,8 @@ import {
   Link,
 } from "@nextui-org/react";
 import StarIcon from "~/app/_components/Icons/Star";
-import AddToFriendsWatchlist from "~/app/_components/add-to-friends-watchlist";
-import AddToWatchlist from "~/app/_components/add-to-watchlist";
+import AddToFriendsWatchlist from "~/app/_components/Watchlist/add-to-friends-watchlist";
+import AddToWatchlist from "~/app/_components/Watchlist/add-to-watchlist";
 import MovieDetailTabs from "~/app/_components/movie-detail-tabs";
 import { getServerAuthSession } from "~/server/auth";
 import { db } from "~/server/db";

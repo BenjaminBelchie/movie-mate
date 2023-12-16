@@ -1,6 +1,4 @@
 import {
-  Autocomplete,
-  AutocompleteItem,
   Avatar,
   Button,
   Card,
@@ -19,8 +17,9 @@ import SharePopover from "../_components/ShareMovie/share-popover";
 import MobileSharePopover from "../_components/ShareMovie/mobile-share-popover";
 import { convertWatchlistItemToMovieBrief } from "~/util/convertWatchlistItemToMovieBrief";
 import { convertWatchlistProvidersToWatchproviders } from "~/util/convertWatchlistProvidersToWatchProviders";
-import RemoveFromWatchlist from "../_components/remove-from-watchlist";
-import FilterFriendsAutocomplete from "../_components/filter-friends-autocomplete";
+import RemoveFromWatchlist from "../_components/Watchlist/remove-from-watchlist";
+import FilterFriendsAutocomplete from "../_components/Watchlist/filter-friends-autocomplete";
+import SortItemsBy from "../_components/Watchlist/sort-items-by";
 
 export default async function WatchlistPage({
   searchParams,
@@ -44,6 +43,10 @@ export default async function WatchlistPage({
       film: { include: { watchProviders: { include: { provider: true } } } },
       addedBy: true,
     },
+    orderBy:
+      searchParams.sort && searchParams.sort === "oldest"
+        ? { dateAdded: "asc" }
+        : { dateAdded: "desc" },
   });
 
   const friends = await db.friend.findMany({
@@ -66,6 +69,7 @@ export default async function WatchlistPage({
           <FilterFriendsAutocomplete
             friends={friends.map((friend) => friend.friend)}
           />
+          <SortItemsBy />
         </div>
         {watchlistItems && watchlistItems.length > 0 ? (
           <div className="grid gap-4 md:grid-cols-2">
