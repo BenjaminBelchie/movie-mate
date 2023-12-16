@@ -17,6 +17,12 @@ export default function FriendRequests({
     },
   });
 
+  const rejectFriendRequestMutation = api.friend.rejectRequest.useMutation({
+    onSuccess: () => {
+      router.refresh();
+    },
+  });
+
   const acceptFriendRequest = (
     requestId: string,
     friendRequestingId: string,
@@ -24,8 +30,12 @@ export default function FriendRequests({
     acceptFriendRequestMutation.mutate({ requestId, friendRequestingId });
   };
 
+  const rejectFriendRequest = (requestId: string) => {
+    rejectFriendRequestMutation.mutate({ requestId });
+  };
+
   return (
-    <div className="flex w-72 flex-col gap-4 p-4">
+    <div className="flex w-[350px] flex-col gap-4 p-4">
       {friendRequests.map((request, index) => (
         <div key={index} className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -42,17 +52,29 @@ export default function FriendRequests({
               </span>
             </div>
           </div>
-          <Button
-            className="mr-0.5 font-medium shadow-small"
-            radius="full"
-            color="primary"
-            size="sm"
-            onClick={() => {
-              acceptFriendRequest(request.id, request.userId);
-            }}
-          >
-            Accept
-          </Button>
+          <div className="flex gap-1">
+            <Button
+              className="mr-0.5 font-medium shadow-small"
+              radius="full"
+              color="primary"
+              size="sm"
+              onClick={() => {
+                acceptFriendRequest(request.id, request.userId);
+              }}
+            >
+              Accept
+            </Button>
+            <Button
+              className="mr-0.5 font-medium shadow-small"
+              radius="full"
+              size="sm"
+              onClick={() => {
+                rejectFriendRequest(request.id);
+              }}
+            >
+              Reject
+            </Button>
+          </div>
         </div>
       ))}
     </div>
