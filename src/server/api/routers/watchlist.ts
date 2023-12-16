@@ -40,6 +40,7 @@ export const watchlistRouter = createTRPCRouter({
           data: {
             filmId: input.movie.id,
             watchlistId: input.watchlistId,
+            addedById: ctx.session.user.id,
           },
         });
       } else {
@@ -53,6 +54,7 @@ export const watchlistRouter = createTRPCRouter({
                   where: { id: input.watchlistId },
                   create: {
                     watchlistId: input.watchlistId,
+                    addedById: ctx.session.user.id,
                   },
                 },
               },
@@ -91,6 +93,7 @@ export const watchlistRouter = createTRPCRouter({
                 data: {
                   filmId: dbResponse.id,
                   watchlistId: input.watchlistId,
+                  addedById: ctx.session.user.id,
                 },
               });
             }
