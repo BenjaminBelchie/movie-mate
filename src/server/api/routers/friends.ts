@@ -65,6 +65,14 @@ export const friendRouter = createTRPCRouter({
       });
     }),
 
+  rejectRequest: protectedProcedure
+    .input(z.object({ requestId: z.string().min(1) }))
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.friend.delete({
+        where: { id: input.requestId },
+      });
+    }),
+
   acceptRequest: protectedProcedure
     .input(
       z.object({
