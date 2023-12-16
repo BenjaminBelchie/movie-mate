@@ -151,7 +151,6 @@ export default function Nav({ isBlurred }: { isBlurred: boolean }) {
                 <p className="font-semibold">Signed in as</p>
                 <p className="font-semibold">{session.user.email}</p>
               </DropdownItem>
-              <DropdownItem key="profile-page">Profile</DropdownItem>
               <DropdownItem key="friends">
                 <Link className="text-small text-white" href="/friends">
                   Friends

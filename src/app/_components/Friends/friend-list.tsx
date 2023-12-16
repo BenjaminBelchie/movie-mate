@@ -33,7 +33,7 @@ export default function FriendList({
   };
 
   return (
-    <div className="grid grid-cols-2 gap-4">
+    <div className="grid gap-4 md:grid-cols-2">
       {friends.map((friend, index) => (
         <Card key={index}>
           <CardBody className="flex flex-row items-center justify-between gap-4">
