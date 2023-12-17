@@ -10,7 +10,7 @@ export const watchlistRouter = createTRPCRouter({
         movie: z.object({
           id: z.number(),
           adult: z.boolean(),
-          backdrop_path: z.string(),
+          backdrop_path: z.string().nullable(),
           original_language: z.string(),
           overview: z.string(),
           popularity: z.number(),

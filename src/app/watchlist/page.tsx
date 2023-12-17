@@ -20,6 +20,7 @@ import { convertWatchlistProvidersToWatchproviders } from "~/util/convertWatchli
 import RemoveFromWatchlist from "../_components/Watchlist/remove-from-watchlist";
 import FilterFriendsAutocomplete from "../_components/Watchlist/filter-friends-autocomplete";
 import SortItemsBy from "../_components/Watchlist/sort-items-by";
+import SearchWatchlistItems from "../_components/Watchlist/search-watchlist-items";
 
 export default async function WatchlistPage({
   searchParams,
@@ -29,10 +30,8 @@ export default async function WatchlistPage({
   const session = await getServerAuthSession();
   if (!session) return redirect("/api/auth/signin");
 
-  console.log(searchParams);
-
   const watchlist = await getOrCreateUserWatchlist(db, session.user.id);
-  const watchlistItems = await db.filmOnWatchlist.findMany({
+  let watchlistItems = await db.filmOnWatchlist.findMany({
     where: {
       AND: [
         { watchlistId: watchlist.id },
@@ -48,6 +47,15 @@ export default async function WatchlistPage({
         ? { dateAdded: "asc" }
         : { dateAdded: "desc" },
   });
+
+  console.log(searchParams.q);
+
+  if (searchParams?.q) {
+    const q = searchParams.q;
+    watchlistItems = watchlistItems.filter((watchlistItem) =>
+      watchlistItem.film.title.toLocaleLowerCase().includes(q.toLowerCase()),
+    );
+  }
 
   const friends = await db.friend.findMany({
     where: { userId: session.user.id },
@@ -65,11 +73,19 @@ export default async function WatchlistPage({
             </Link>
           </div>
         </div>
-        <div className="flex gap-2">
-          <FilterFriendsAutocomplete
-            friends={friends.map((friend) => friend.friend)}
-          />
-          <SortItemsBy />
+        <div className="flex md:hidden">
+          <SearchWatchlistItems />
+        </div>
+        <div className="flex justify-between">
+          <div className="flex gap-2">
+            <FilterFriendsAutocomplete
+              friends={friends.map((friend) => friend.friend)}
+            />
+            <SortItemsBy />
+          </div>
+          <div className="hidden md:flex">
+            <SearchWatchlistItems />
+          </div>
         </div>
         {watchlistItems && watchlistItems.length > 0 ? (
           <div className="grid gap-4 md:grid-cols-2">
