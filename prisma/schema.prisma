@@ -48,7 +48,7 @@ model FilmOnWatchlist {
 model Film {
     id     Int @id @unique
     adult       Boolean
-    backdrop_path String
+    backdrop_path String?
     watchProviders FilmWatchProviders[]
     original_language String
     overview String
