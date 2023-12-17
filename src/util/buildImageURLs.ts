@@ -1,6 +1,6 @@
 export function buildBackdropImageURL(
   width: "w300" | "w780" | "w1280" | "original",
-  path?: string,
+  path?: string | null,
 ) {
   return `https://image.tmdb.org/t/p/${width}${path}`;
 }
