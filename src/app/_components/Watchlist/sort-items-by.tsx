@@ -35,8 +35,8 @@ export default function SortItemsBy() {
       size="sm"
       selectorIcon={<SelectorIcon />}
     >
-      <SelectItem key="latest" value="Latest">
-        Latest
+      <SelectItem key="newest" value="Newest">
+        Newest
       </SelectItem>
       <SelectItem key="oldest" value="Oldest">
         Oldest
