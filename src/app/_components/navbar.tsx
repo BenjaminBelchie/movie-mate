@@ -161,6 +161,11 @@ export default function Nav({ isBlurred }: { isBlurred: boolean }) {
                   My Watchlist
                 </Link>
               </DropdownItem>
+              <DropdownItem key="watchlist">
+                <Link className="text-small text-white" href="/about">
+                  About
+                </Link>
+              </DropdownItem>
               <DropdownItem key="logout" color="danger">
                 <Link
                   className="text-small text-white"
