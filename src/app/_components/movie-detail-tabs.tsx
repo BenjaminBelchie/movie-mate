@@ -20,6 +20,8 @@ import StarIcon from "./Icons/Star";
 import { formatDateString } from "~/util/convertDateString";
 import getRandomAvatarColor from "~/util/getRandomAvatarColor";
 import { type Actor } from "~/types/Actor";
+import Lottie from "lottie-react";
+import lost from "~/app/_components/Animations/lost.json";
 
 type Props = {
   simularMovies: MovieBrief[];
@@ -42,31 +44,45 @@ export default function MovieDetailTabs({
     >
       <Tab key="simular" title="Related">
         <div className="p-4 md:p-0">
-          <p className="my-4 text-4xl font-bold">Related Movies</p>
-          <div className="grid w-fit grid-cols-2 gap-4 md:grid-cols-6">
-            {simularMovies.map((movie, index) => (
-              <Link href={`/movie/${movie.id}`} key={index}>
-                <Card
-                  isFooterBlurred
-                  key={index}
-                  className="col-span-12 h-[300px] w-fit cursor-pointer sm:col-span-5"
-                >
-                  <Image
-                    height={300}
-                    width={200}
-                    alt="Card example background"
-                    className="z-0  -translate-y-6 scale-125 object-cover"
-                    src={buildPosterImageURL("w500", movie.poster_path)}
-                  />
-                  <CardFooter className="absolute bottom-0 z-10 justify-between border-t-1 border-zinc-100/50 bg-white/30">
-                    <p className="line-clamp-1 font-bold text-black">
-                      {movie.title}
-                    </p>
-                  </CardFooter>
-                </Card>
-              </Link>
-            ))}
-          </div>
+          {simularMovies.length > 0 ? (
+            <>
+              <p className="my-4 text-4xl font-bold">Related Movies</p>
+              <div className="grid w-fit grid-cols-2 gap-4 md:grid-cols-6">
+                {simularMovies.map((movie, index) => (
+                  <Link href={`/movie/${movie.id}`} key={index}>
+                    <Card
+                      isFooterBlurred
+                      key={index}
+                      className="col-span-12 h-[300px] w-fit cursor-pointer sm:col-span-5"
+                    >
+                      <Image
+                        height={300}
+                        width={200}
+                        alt="Card example background"
+                        className="z-0  -translate-y-6 scale-125 object-cover"
+                        src={buildPosterImageURL("w500", movie.poster_path)}
+                      />
+                      <CardFooter className="absolute bottom-0 z-10 justify-between border-t-1 border-zinc-100/50 bg-white/30">
+                        <p className="line-clamp-1 font-bold text-black">
+                          {movie.title}
+                        </p>
+                      </CardFooter>
+                    </Card>
+                  </Link>
+                ))}
+              </div>
+            </>
+          ) : (
+            <div className="mb-12 w-96">
+              <p className="my-4 text-center text-4xl font-bold">
+                Related Movies
+              </p>
+              <Lottie animationData={lost} loop={true} size={200} />
+              <p className="text-center text-large">
+                Looks like this movie has no related movies
+              </p>
+            </div>
+          )}
         </div>
       </Tab>
       <Tab key="reviews" title="Reviews">
