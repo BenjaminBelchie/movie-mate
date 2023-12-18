@@ -10,9 +10,12 @@ import { type User } from "@prisma/client";
 import { SearchIcon } from "../Icons/SearchIcon";
 import { api } from "~/trpc/react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { SelectorIcon } from "../Icons/SelectorIcon";
 
 export default function FindFriendsAutocomplete({ users }: { users: User[] }) {
   const router = useRouter();
+  const [showPopover, setShowPopover] = useState(false);
 
   const createFriendRequest = api.friend.create.useMutation({
     onSuccess: () => {
@@ -24,6 +27,14 @@ export default function FindFriendsAutocomplete({ users }: { users: User[] }) {
     createFriendRequest.mutate({ friendId });
   };
 
+  const onInputChange = (value: string) => {
+    if (value) {
+      setShowPopover(true);
+    } else {
+      setShowPopover(false);
+    }
+  };
+
   return (
     <Autocomplete
       classNames={{
@@ -32,6 +43,8 @@ export default function FindFriendsAutocomplete({ users }: { users: User[] }) {
         selectorButton: "text-default-500",
       }}
       defaultItems={users}
+      selectorIcon={<SelectorIcon />}
+      onInputChange={onInputChange}
       inputProps={{
         classNames: {
           input: "ml-1",
@@ -61,6 +74,7 @@ export default function FindFriendsAutocomplete({ users }: { users: User[] }) {
       placeholder="Find new friends"
       popoverProps={{
         offset: 10,
+        hidden: !showPopover,
         classNames: {
           base: "rounded-large",
           content: "p-1 border-small border-default-100 bg-background",
