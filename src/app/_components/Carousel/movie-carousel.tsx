@@ -11,7 +11,7 @@ type PropType = {
   options?: EmblaOptionsType;
 };
 
-const EmblaCarousel: React.FC<PropType> = (props) => {
+const MovieCarousel: React.FC<PropType> = (props) => {
   const { movies, options } = props;
   const [emblaRef] = useEmblaCarousel(options);
 
@@ -51,4 +51,4 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
   );
 };
 
-export default EmblaCarousel;
+export default MovieCarousel;

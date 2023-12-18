@@ -2,7 +2,7 @@ import { getServerAuthSession } from "~/server/auth";
 import { api } from "~/trpc/server";
 import Nav from "./_components/navbar";
 import { Button } from "@nextui-org/react";
-import EmblaCarousel from "~/app/_components/Carousel/embla-carousel";
+import MovieCarousel from "~/app/_components/Carousel/movie-carousel";
 import { type EmblaOptionsType } from "embla-carousel-react";
 import StarIcon from "./_components/Icons/Star";
 import Link from "next/link";
@@ -11,11 +11,14 @@ import getRandomMovie from "~/util/getRandomMovie";
 import { buildBackdropImageURL } from "~/util/buildImageURLs";
 import getMovieGenres from "~/util/getMovieGenres";
 import SharePopover from "./_components/ShareMovie/share-popover";
+import fetchPopularShows from "~/util/queries/fetchPopularTVShows";
+import TVShowCarousel from "./_components/Carousel/tv-show-carousel";
 
 export default async function Home() {
   const session = await getServerAuthSession();
 
   const popularMovies = await fetchPopularMovies();
+  const popularShows = await fetchPopularShows();
   const heroMovie = getRandomMovie(popularMovies.results);
   const genres = await getMovieGenres(heroMovie);
 
@@ -85,8 +88,13 @@ export default async function Home() {
             </div>
           </div>
         </div>
-        <div className="flex gap-4">
-          <EmblaCarousel movies={popularMovies.results} options={OPTIONS} />
+        <div className="flex flex-col pt-4">
+          <p className="pl-4 text-3xl font-bold">Movies</p>
+          <MovieCarousel movies={popularMovies.results} options={OPTIONS} />
+        </div>
+        <div className="flex flex-col gap-4 pt-4">
+          <p className="pl-4 text-3xl font-bold">TV Shows</p>
+          <TVShowCarousel shows={popularShows.results} options={OPTIONS} />
         </div>
       </div>
     </main>
