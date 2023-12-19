@@ -39,13 +39,6 @@ export default async function ShareMovieCard({
                 },
               );
 
-              let whereToWatch;
-              if (!movieWatchProviders) {
-                whereToWatch = await fetchMovieWatchProviders(
-                  movie.id.toString(),
-                );
-              }
-
               const isInFriendWatchlist = !!movieInWatchFriendlist;
               return (
                 <Card
@@ -87,11 +80,7 @@ export default async function ShareMovieCard({
                       <AddToFriendsWatchlist
                         movie={movie}
                         watchlistId={friendWatchlist.id}
-                        movieWatchProviders={
-                          movieWatchProviders
-                            ? movieWatchProviders
-                            : whereToWatch?.flatrate
-                        }
+                        movieWatchProviders={movieWatchProviders}
                       />
                     )}
                   </CardHeader>

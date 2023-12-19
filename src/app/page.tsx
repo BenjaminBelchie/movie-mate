@@ -11,6 +11,8 @@ import getRandomMovie from "~/util/getRandomMovie";
 import { buildBackdropImageURL } from "~/util/buildImageURLs";
 import getMovieGenres from "~/util/getMovieGenres";
 import SharePopover from "./_components/ShareMovie/share-popover";
+import AddToWatchlistIconButton from "./_components/Watchlist/add-to-watchlist-icon-button";
+import { db } from "~/server/db";
 
 export default async function Home() {
   const session = await getServerAuthSession();
@@ -20,9 +22,22 @@ export default async function Home() {
   const genres = await getMovieGenres(heroMovie);
 
   let friends;
+  let userWatchlist;
+  let filmsOnWatchlist;
+
   if (session && heroMovie) {
+    userWatchlist = await api.watchlist.getUserWatchlist.query({
+      userId: session.user.id,
+    });
+    filmsOnWatchlist = await db.filmOnWatchlist.findMany({
+      where: { watchlistId: userWatchlist?.id },
+    });
     friends = await api.friend.findUserFriends.query();
   }
+
+  const heroMovieOnWatchlist = filmsOnWatchlist?.find(
+    (filmOnWatchlist) => filmOnWatchlist.filmId === heroMovie?.id,
+  );
 
   const backdropImage = buildBackdropImageURL(
     "w1280",
@@ -82,11 +97,25 @@ export default async function Home() {
               {heroMovie && (
                 <SharePopover friends={friends} movie={heroMovie} />
               )}
+              {heroMovie && userWatchlist && (
+                <AddToWatchlistIconButton
+                  movie={heroMovie}
+                  watchlistId={userWatchlist.id}
+                  movieProviders={undefined}
+                  isInWatchlist={heroMovieOnWatchlist ? true : false}
+                  watchlistItemId={heroMovieOnWatchlist?.id}
+                />
+              )}
             </div>
           </div>
         </div>
         <div className="flex gap-4">
-          <EmblaCarousel movies={popularMovies.results} options={OPTIONS} />
+          <EmblaCarousel
+            movies={popularMovies.results}
+            options={OPTIONS}
+            watchlistId={userWatchlist?.id}
+            filmsOnWatchlist={filmsOnWatchlist}
+          />
         </div>
       </div>
     </main>
