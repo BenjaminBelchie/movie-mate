@@ -56,6 +56,7 @@ export default function MovieDetailTabs({
                       className="col-span-12 h-[300px] w-fit cursor-pointer sm:col-span-5"
                     >
                       <Image
+                        unoptimized
                         height={300}
                         width={200}
                         alt="Card example background"
@@ -155,6 +156,7 @@ export default function MovieDetailTabs({
                 >
                   <CardBody className="overflow-visible p-0">
                     <Image
+                      unoptimized
                       width={185}
                       height={300}
                       alt={actor.name}

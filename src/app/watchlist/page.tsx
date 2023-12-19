@@ -94,6 +94,7 @@ export default async function WatchlistPage({
                 <div className="flex justify-between p-4">
                   <div className="flex items-center gap-5">
                     <Image
+                      unoptimized
                       width={92}
                       height={138}
                       className="h-[138px]"
@@ -188,6 +189,7 @@ export default async function WatchlistPage({
         ) : (
           <div className="flex flex-col items-center justify-center">
             <Image
+              unoptimized
               src="/Error-page.png"
               height={500}
               width={500}

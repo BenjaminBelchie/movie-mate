@@ -1,4 +1,4 @@
-import { Avatar, Button, Divider, Image } from "@nextui-org/react";
+import { Avatar, Button, Divider } from "@nextui-org/react";
 import ProductDescription from "../_components/About/product-description";
 import { CoffeeIcon } from "../_components/Icons/CoffeeIcon";
 
