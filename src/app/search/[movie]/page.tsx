@@ -54,6 +54,7 @@ export default async function SearchPage({
               <CardBody>
                 <div className="flex gap-6">
                   <Image
+                    unoptimized
                     alt={movie.title}
                     className="object-cover"
                     height={200}
