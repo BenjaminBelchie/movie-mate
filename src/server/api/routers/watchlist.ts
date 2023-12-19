@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import fetchMovieWatchProviders from "~/util/queries/fetchMovieWatchProviders";
 
 export const watchlistRouter = createTRPCRouter({
   addToWatchlist: protectedProcedure
@@ -31,6 +32,12 @@ export const watchlistRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      if (!input.movieProviders) {
+        const providers = await fetchMovieWatchProviders(
+          input.movie.id.toString(),
+        );
+        input.movieProviders = providers?.flatrate;
+      }
       const film = await ctx.db.film.findUnique({
         where: { id: input.movie.id },
       });
@@ -110,5 +117,40 @@ export const watchlistRouter = createTRPCRouter({
       return ctx.db.filmOnWatchlist.delete({
         where: { id: input.watchlistItemId },
       });
+    }),
+
+  getUserWatchlist: protectedProcedure
+    .input(z.object({ userId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return ctx.db.userWatchlist.findFirst({
+        where: { userId: input.userId },
+      });
+    }),
+
+  getFilmOnWatchlist: protectedProcedure
+    .input(z.object({ movieId: z.number() }))
+    .query(async ({ ctx, input }) => {
+      const userWatchlist = await ctx.db.userWatchlist.findFirst({
+        where: { userId: ctx.session.user.id },
+      });
+      return ctx.db.filmOnWatchlist.findFirst({
+        where: {
+          AND: [{ watchlistId: userWatchlist?.id }, { filmId: input.movieId }],
+        },
+      });
+    }),
+
+  getFilmOnFriendWatchlist: protectedProcedure
+    .input(z.object({ movieId: z.number(), userId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const userWatchlist = await ctx.db.userWatchlist.findFirst({
+        where: { userId: input.userId },
+      });
+      const watchlistItem = await ctx.db.filmOnWatchlist.findFirst({
+        where: {
+          AND: [{ watchlistId: userWatchlist?.id }, { filmId: input.movieId }],
+        },
+      });
+      return !!watchlistItem;
     }),
 });
