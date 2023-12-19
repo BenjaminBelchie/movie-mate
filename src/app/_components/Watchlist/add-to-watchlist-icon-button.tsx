@@ -56,7 +56,7 @@ export default function AddToWatchlistIconButton({
     >
       <Button
         isIconOnly
-        variant="faded"
+        variant="flat"
         onClick={() => {
           isInWatchlist && watchlistItemId
             ? removeFromWatchlist(watchlistItemId)
