@@ -35,8 +35,9 @@ export const env = createEnv({
     GOOGLE_CLIENT_ID: z.string(),
     GOOGLE_CLIENT_SECRET: z.string(),
     TMDB_READ_ACCESS_TOKEN: z.string(),
+    GMAIL_EMAIL_ADDRESS: z.string(),
+    GMAIL_APP_PASSWORD: z.string(),
   },
-
   /**
    * Specify your client-side environment variables schema here. This way you can ensure the app
    * isn't built with invalid env vars. To expose them to the client, prefix them with
@@ -61,6 +62,8 @@ export const env = createEnv({
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
     TMDB_READ_ACCESS_TOKEN: process.env.TMDB_READ_ACCESS_TOKEN,
+    GMAIL_EMAIL_ADDRESS: process.env.GMAIL_EMAIL_ADDRESS,
+    GMAIL_APP_PASSWORD: process.env.GMAIL_APP_PASSWORD,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
