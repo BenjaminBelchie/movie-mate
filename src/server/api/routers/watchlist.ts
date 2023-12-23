@@ -1,7 +1,9 @@
 import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { getOrCreateUserWatchlist } from "~/util/getOrCreateUserWatchlist";
 import fetchMovieWatchProviders from "~/util/queries/fetchMovieWatchProviders";
+import SendEmail from "../email";
 
 export const watchlistRouter = createTRPCRouter({
   addToWatchlist: protectedProcedure
@@ -32,6 +34,25 @@ export const watchlistRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      const userWatchlist = await ctx.db.userWatchlist.findUnique({
+        where: { userId: ctx.session.user.id },
+      });
+
+      if (userWatchlist?.id !== input.watchlistId) {
+        console.log("Adding to friends watchlist");
+        const friend = await ctx.db.userWatchlist.findUnique({
+          where: { id: input.watchlistId },
+          include: { user: true },
+        });
+        if (friend && ctx.session.user.email) {
+          await SendEmail(
+            friend.user.email,
+            friend.user.name,
+            ctx.session.user.email,
+            input.movie.title,
+          );
+        }
+      }
       if (!input.movieProviders) {
         const providers = await fetchMovieWatchProviders(
           input.movie.id.toString(),
@@ -51,60 +72,57 @@ export const watchlistRouter = createTRPCRouter({
           },
         });
       } else {
-        return ctx.db.film
-          .create({
-            data: {
-              watchlistId: input.watchlistId,
-              ...input.movie,
-              watchlist: {
-                connectOrCreate: {
-                  where: { id: input.watchlistId },
-                  create: {
-                    watchlistId: input.watchlistId,
-                    addedById: ctx.session.user.id,
-                  },
-                },
-              },
-              watchProviders: {
-                create: input.movieProviders?.map((provider) => ({
-                  provider: {
-                    connectOrCreate: {
-                      where: { provider_id: provider.provider_id },
-                      create: {
-                        logo_path: provider.logo_path,
-                        provider_id: provider.provider_id,
-                        provider_name: provider.provider_name,
-                      },
-                    },
-                  },
-                })),
-              },
-            },
-          })
-          .then(async (dbResponse) => {
-            const filmOnWatchlistEntry = await ctx.db.filmOnWatchlist.findFirst(
-              {
-                where: {
-                  filmId: dbResponse.id,
-                  watchlistId: input.watchlistId,
-                },
-              },
-            );
-
-            if (filmOnWatchlistEntry) {
-              // Entry already exists, you might want to handle this case accordingly
-              console.log("Entry already exists:", filmOnWatchlistEntry);
-            } else {
-              // Entry doesn't exist, create a new one
-              await ctx.db.filmOnWatchlist.create({
-                data: {
-                  filmId: dbResponse.id,
+        return ctx.db.film.create({
+          data: {
+            watchlistId: input.watchlistId,
+            ...input.movie,
+            watchlist: {
+              connectOrCreate: {
+                where: { id: input.watchlistId },
+                create: {
                   watchlistId: input.watchlistId,
                   addedById: ctx.session.user.id,
                 },
-              });
-            }
-          });
+              },
+            },
+            watchProviders: {
+              create: input.movieProviders?.map((provider) => ({
+                provider: {
+                  connectOrCreate: {
+                    where: { provider_id: provider.provider_id },
+                    create: {
+                      logo_path: provider.logo_path,
+                      provider_id: provider.provider_id,
+                      provider_name: provider.provider_name,
+                    },
+                  },
+                },
+              })),
+            },
+          },
+        });
+        // .then(async (dbResponse) => {
+        //   const filmOnWatchlistEntry = await ctx.db.filmOnWatchlist.findFirst(
+        //     {
+        //       where: {
+        //         filmId: dbResponse.id,
+        //         watchlistId: input.watchlistId,
+        //       },
+        //     },
+        //   );
+
+        //   if (filmOnWatchlistEntry) {
+        //     console.log("Entry already exists:", filmOnWatchlistEntry);
+        //   } else {
+        //     await ctx.db.filmOnWatchlist.create({
+        //       data: {
+        //         filmId: dbResponse.id,
+        //         watchlistId: input.watchlistId,
+        //         addedById: ctx.session.user.id,
+        //       },
+        //     });
+        //   }
+        // });
       }
     }),
   removeFromWatchlist: protectedProcedure
@@ -122,6 +140,7 @@ export const watchlistRouter = createTRPCRouter({
   getUserWatchlist: protectedProcedure
     .input(z.object({ userId: z.string() }))
     .query(async ({ ctx, input }) => {
+      await getOrCreateUserWatchlist(ctx.db, input.userId);
       return ctx.db.userWatchlist.findFirst({
         where: { userId: input.userId },
       });
