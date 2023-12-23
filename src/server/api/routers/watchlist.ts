@@ -101,28 +101,6 @@ export const watchlistRouter = createTRPCRouter({
             },
           },
         });
-        // .then(async (dbResponse) => {
-        //   const filmOnWatchlistEntry = await ctx.db.filmOnWatchlist.findFirst(
-        //     {
-        //       where: {
-        //         filmId: dbResponse.id,
-        //         watchlistId: input.watchlistId,
-        //       },
-        //     },
-        //   );
-
-        //   if (filmOnWatchlistEntry) {
-        //     console.log("Entry already exists:", filmOnWatchlistEntry);
-        //   } else {
-        //     await ctx.db.filmOnWatchlist.create({
-        //       data: {
-        //         filmId: dbResponse.id,
-        //         watchlistId: input.watchlistId,
-        //         addedById: ctx.session.user.id,
-        //       },
-        //     });
-        //   }
-        // });
       }
     }),
   removeFromWatchlist: protectedProcedure
