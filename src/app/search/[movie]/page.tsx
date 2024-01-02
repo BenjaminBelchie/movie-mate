@@ -62,9 +62,13 @@ export default async function SearchPage({
         </div>
         <div className="flex flex-col gap-2">
           {searchResult.results.map((movie, index) => {
-            const filmOnWatchlist = filmsOnWatchlist.find(
-              (movieOnWatchlist) => movieOnWatchlist.filmId === movie.id,
-            );
+            let filmOnWatchlist;
+
+            if(filmsOnWatchlist){
+              filmOnWatchlist = filmsOnWatchlist.find(
+                (movieOnWatchlist) => movieOnWatchlist.filmId === movie.id,
+                );
+              }
 
             const isFilmOnWatchlist = filmOnWatchlist ? true : false;
             return (
